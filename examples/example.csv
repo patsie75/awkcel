@@ -1,0 +1,30 @@
+Name;Length (mm);Width (mm);Height (mm);Weight (g);cnt();sum();avg()
+Apple iPhone 13;146.7;71.5;7.65;173;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 14;146.7;71.5;7.8;172;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 14 Pro;147.5;71.5;7.85;206;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 15;147.6;71.6;7.8;171;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 15 Pro;146.6;70.6;8.25;187;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 16;147.6;71.6;7.8;170;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 16 Pro;149.6;71.5;8.25;199;;=rnd(100:1);=rnd(100:1)
+Apple iPhone 16e;146.7;71.5;7.8;167;;=rnd(100:1);=rnd(100:1)
+ASUS Zenfone 10;146.5;68.1;9.4;172;;=rnd(100:1);=rnd(100:1)
+Google Pixel 6a;152.2;71.8;8.9;178;;=rnd(100:1);=rnd(100:1)
+Google Pixel 7a;152.4;72.9;9;193;-------;-------;-------
+Google Pixel 8a;152.1;72.7;8.9;189;=cnt(F2:F11);=sum(G2:G11);=avg(H2:H11)
+Google Pixel 8;150.5;70.8;8.9;187
+Google Pixel 9;152.8;72;8.5;198
+Google Pixel 9 Pro;152.8;72;8.5;199
+Motorola edge 50 neo;154.1;71.2;8.1;171
+Samsung Galaxy S23;146.3;70.9;7.6;168
+Samsung Galaxy S24;147;70.6;7.6;168
+Samsung Galaxy S25;146.9;70.5;7.2;162
+Sony Xperia 10 V;155;68;8.3;159
+Sony Xperia 10 VI;155;68;8.3;164
+Sony Xperia 5 V;154;68;8.6;183
+Xiaomi 14;152.8;71.5;8.2;193
+
+cnt();=cnt(B2:B24);=cnt(C2:C24);=cnt(D2:D24);=cnt(E2:E24)
+sum();=sum(B2:B24);=sum(C2:C24);=sum(D2:D24);=sum(E2:E24)
+avg();=avg(B2:B24);=avg(C2:C24);=avg(D2:D24);=avg(E2:E24)
+min();=min(B2:B24);=min(C2:C24);=min(D2:D24);=min(E2:E24)
+max();=max(B2:B24);=max(C2:C24);=max(D2:D24);=max(E2:E24)
