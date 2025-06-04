@@ -41,6 +41,11 @@ function f_min(a,     i, min) { min = 9999999999; for (i in a) min = (a[i] < min
 function f_max(a,     i, max) { for (i in a) max = (a[i] > max) ? a[i] : max; return max }
 function f_rnd(a, b) { return rand() * a + b }
 
+function is_int(val) { return val+0 == val && int(val) == val }
+function is_float(val) { return val+0 == val && int(val) != val }
+function is_number(val) { return is_int(val) || is_float(val) }
+function is_string(val) { return !is_number(val) }
+
 function xls_getpage(self) { return self["page"] }
 function xls_setpage(self, val) { self["page"] = val }
 function xls_setwidth(self, column, width) { self[self["page"],toupper(column),"width"] = width }
@@ -197,6 +202,77 @@ function xls_setcolor(self, str, fg, bg,     n, a_tmp, page) {
   }
 }
 
+
+function xls_pivot(self, page, fnc, data, cols, rows,     entries,header,n, d,r,c, ucols,urows, cnt,sum,avg,min,max, x,y, val, nrrows) {
+
+  # Get headers (first row)
+  header[rows] = cell_value(self, rows,1)
+  header[cols] = cell_value(self, cols,1)
+  header[data] = cell_value(self, data,1)
+
+  entries = self[self["page"],"NR"]
+  for (n=2; n<=entries; n++) {
+    # get value from the "data", "rows" and "cols" rows
+    d = cell_value(self, data,n)
+    r = cell_value(self, rows,n)
+    c = cell_value(self, cols,n)
+
+    # count unique entries in "rows" and "cols"
+    ucols[c]
+    urows[r]
+
+    # culminate values
+    cnt[c,r]++
+    sum[c,r] += d
+    min[c,r] = (!((c,r) in min) || (d<min[c,r])) ? d : min[c,r]
+    max[c,r] = (!((c,r) in max) || (d>max[c,r])) ? d : max[c,r]
+  }
+
+  # set number of rows
+  self[page,"NR"] = nrrows = length(urows) + 3
+
+  # set "A1" to function + data, "B1" to "cols" and "A2" to "rows" header
+  self[page, "A",1,"value"] = sprintf("%s(%s)", fnc, header[data])
+  self[page, "B",1,"value"] = header[cols]
+  self[page, "A",2,"value"] = header[rows]
+  self[page, "A",nrrows,"value"] = "Total"
+
+  x = 2
+  for (c in ucols) {
+    # set colums headers
+    self[page, labels[x],2,"value"] = c
+
+    # set grand total
+    val = sprintf("=sum(%c3:%c%d)", labels[x], labels[x], nrrows-1)
+    self[page, labels[x],nrrows,"value"] = val
+
+    x++
+  }
+
+  y = 3
+  for (r in urows) {
+    # set rows headers
+    self[page, "A",y,"value"] = r
+
+    x = 2
+    for (c in ucols) {
+      # set value based on function
+      if (fnc == "cnt") val = cnt[c,r]
+      if (fnc == "sum") val = sum[c,r]
+      if (fnc == "avg") val = cnt[c,r] ? sum[c,r] / cnt[c,r] : "-nan"
+      if (fnc == "min") val = min[c,r]
+      if (fnc == "max") val = max[c,r]
+
+      if (is_float(val)) self[page, labels[x],y,"value"] = sprintf("%.2f", val)
+      else if (is_int(val)) self[page, labels[x],y,"value"] = sprintf("%d", val)
+      else self[page, labels[x],y,"value"] = sprintf("%s", val)
+      x++
+    }
+    y++
+  }
+}
+
+
 function xls_statusbar(self,     page, x,y, i, fg,bg, s_page, barlen) {
   page = self["page"]
   x = labels[ self[page, "cursor","x"] ]
@@ -212,6 +288,7 @@ function xls_statusbar(self,     page, x,y, i, fg,bg, s_page, barlen) {
   barlen = 30
   printf("\033[%s;%sm [%-6s] [%-*s] %74s\033[0m\n", COLOR["black"], COLOR["white"]+10, x "" y, barlen, substr(self[page,x,y,"value"],1,barlen), s_page)
 }
+
 
 function xls_print(self,     n, page, arrx, x, y, w, fg, bg, width) {
   n = split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", arrx, "")
